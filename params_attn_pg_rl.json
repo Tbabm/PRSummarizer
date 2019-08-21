@@ -1,0 +1,42 @@
+{
+    "data_dir": "data",
+    "data_file_suffix": "pr_commits_20_400_100_0.5_nltk.csv",
+    "vocab_path": "data/train.pr_commits_20_400_100_0.5_nltk_vocab.json",
+    "model_root": "models/",
+
+    "hidden_dim": 256,
+    "embed_dim": 128,
+    "batch_size": 8,
+    "max_enc_steps": 400,
+    "max_dec_steps": 100,
+    "beam_size": 4,
+    "min_dec_steps": 5,
+    "vocab_size": 50000,
+
+    "eps": 1e-12,
+    "max_iterations": 40000,
+
+    "optim": "Adam",
+    "lr": 0.0001,
+    "reoptim": true,
+    "teacher_forcing_ratio": 1,
+
+    "pointer_gen": true,
+
+    "is_coverage": false,
+    "lr_coverage": 0.15,
+    "cov_loss_wt": 1.0,
+
+    "train_ml": true,
+    "train_rl": true,
+    "rl_weight": 0.9984,
+
+    "device": "cuda:0",
+    "eval_device": "cuda:0",
+
+    "summary_flush_interval": 100,
+    "print_interval": 200,
+    "eval_print_interval": 1000,
+    "test_print_interval": 1000,
+    "save_interval": 1000
+}
