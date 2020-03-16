@@ -54,16 +54,41 @@ sha_pattern = r'(^|\s)[\dA-Fa-f-]{7,}(?=(\s|$))'
 digit_pattern = r'(^|\s|-)[\d]+(?=(\s|$))'
 ```
 
-## Source Code
-
+## Installation
+### Clone and Prepare Dataset
 ```bash
-mkdir data
+$ git clone https://github.com/Tbabm/PRSummarizer.git
+$ cd PRSummarizer
+$ mkdir data
 # download our preprocessed dataset and place the four files in `data`
-mkdir models
-# install ROUGE-1.5.5
-pip3 install pyrouge
+$ mkdir models
 ```
 
+### Install ROUGE
+- See [here](https://gist.github.com/Tbabm/65b5d8a3adb9845d55ce27143913e3b2) for instructions about installing ROUGE
+- Please make sure you have correctly set environment variable `ROUGE` to `/absolute/path/to/ROUGE-RELEASE-1.5.5`
+
+### Install Dependencies
+```bash
+$ pip install -r requirements.txt
+```
+
+### Install pyrouge
+- install and test pyrouge if you haven't done it.
+
+```bash
+$ git clone https://github.com/bheinzerling/pyrouge
+$ cd pyrouge
+$ pip install .
+
+# set rouge path for pyrouge
+$ pyrouge_set_rouge_path ${ROUGE}
+
+# test the installation of pyrouge
+$ python -m pyrouge.test
+```
+
+## Usage 
 ### Train
 
 Train `Attn+PG` first:
@@ -75,7 +100,7 @@ python3 -m prsum.prsum train --param-path params_attn_pg.json
 After training, suppose the models are stored in `models/train_12345678/model/`. Select the best `Attn+PG` model:
 
 ```bash
-python3 -m prsum.prsum select_model 
+python3 -m prsum.prsum select_model \
                        --param_path params_attn_pg.json \
                        --model_pattern "models/train_12345678/model/model_{}_" \
                        --start_iter 1000 \
