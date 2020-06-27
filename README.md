@@ -69,6 +69,14 @@ $ mkdir models
 - Please make sure you have correctly set environment variable `ROUGE` to `/absolute/path/to/ROUGE-RELEASE-1.5.5`
 
 ### Install Dependencies
+**Through conda**:
+
+```bash
+$ conda env create -f environment.yml
+```
+
+**OR** through pip
+
 ```bash
 $ pip install -r requirements.txt
 ```
@@ -110,7 +118,7 @@ python3 -m prsum.prsum select_model \
 Suppose the best model is `model_12000_87654321`. Train `Attn+PG+RL` based on the best model:
 
 ```bash
-python3 -m prsum.prsum train
+python3 -m prsum.prsum train \
                        --param_path params_attn_pg_rl.json \
                        --model_path "models/train_12345678/model/model_12000_87654321"
 ```
