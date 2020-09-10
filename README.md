@@ -167,6 +167,21 @@ python3 -m prsum.prsum decode \
                        --ngram_filter 1
 ``` 
 
+## Citation
+If you use this code, please consider citing our paper:
+
+```bib
+@inproceedings{liu2019automatic,
+  title={Automatic generation of pull request descriptions},
+  author={Liu, Zhongxin and Xia, Xin and Treude, Christoph and Lo, David and Li, Shanping},
+  booktitle={Proceedings of the 34th IEEE/ACM International Conference on Automated Software Engineering},
+  pages={176--188},
+  year={2019},
+}
+```
+
+Thanks!
+
 ## Reference
 
 - Our paper: "Automatic Generation of Pull Request Description"
