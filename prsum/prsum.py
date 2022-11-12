@@ -368,48 +368,49 @@ class Train(Procedure):
         reward_total = 0
 
         while iter < n_iters:
-            batch = self.batcher.next_batch()
-            loss, reward = self.train_one_batch(batch, iter)
+            with torch.ni_grad():
+                batch = self.batcher.next_batch()
+                loss, reward = self.train_one_batch(batch, iter)
 
-            running_avg_loss = utils.calc_running_avg_loss(loss, running_avg_loss, self.summary_writer, iter)
-            loss_total += loss
-            reward_total += reward
-            iter += 1
+                running_avg_loss = utils.calc_running_avg_loss(loss, running_avg_loss, self.summary_writer, iter)
+                loss_total += loss
+                reward_total += reward
+                iter += 1
 
-            if iter % self.summary_flush_interval == 0:
-                self.summary_writer.flush()
-            if iter % self.print_interval == 0:
-                elapse, remain = utils.time_since(start_time, (iter - start_iter) / total_iter)
-                iter_num = iter - start_iter
-                print('Train steps %d, seconds for %d batch: %.2f , loss: %f, reward: %f, elapse: %s, remain: %s' %
-                      (iter, self.print_interval,time.time() - start, loss_total/iter_num, reward_total/iter_num,
-                       elapse, remain))
-                sys.stdout.flush()
-                start = time.time()
-                if np.isnan(loss) or np.isnan(running_avg_loss):
-                    raise ValueError("Loss becomes nan")
+                if iter % self.summary_flush_interval == 0:
+                    self.summary_writer.flush()
+                if iter % self.print_interval == 0:
+                    elapse, remain = utils.time_since(start_time, (iter - start_iter) / total_iter)
+                    iter_num = iter - start_iter
+                    print('Train steps %d, seconds for %d batch: %.2f , loss: %f, reward: %f, elapse: %s, remain: %s' %
+                          (iter, self.print_interval,time.time() - start, loss_total/iter_num, reward_total/iter_num,
+                           elapse, remain))
+                    sys.stdout.flush()
+                    start = time.time()
+                    if np.isnan(loss) or np.isnan(running_avg_loss):
+                        raise ValueError("Loss becomes nan")
 
-            if iter % self.save_interval == 0:
-                model_save_path, param_save_path = self._get_save_path(iter)
-                self.save_model(iter, running_avg_loss, model_save_path)
-                self.params.save(param_save_path)
+                if iter % self.save_interval == 0:
+                    model_save_path, param_save_path = self._get_save_path(iter)
+                    self.save_model(iter, running_avg_loss, model_save_path)
+                    self.params.save(param_save_path)
 
-                if eval:
-                    kwargs = {
-                        "params": self.params,
-                        "model_path": model_save_path,
-                        "ngram_filter": False,
-                        "data_file_prefix": "valid."
-                    }
-                    # p = mp.Process(target=PRSum.eval_raw, kwargs=kwargs)
-                    # decode instead of evaluate
-                    p = mp.Process(target=PRSum.decode_raw, kwargs=kwargs)
-                    eval_processes.append(p)
-                    p.start()
+                    if eval:
+                        kwargs = {
+                            "params": self.params,
+                            "model_path": model_save_path,
+                            "ngram_filter": False,
+                            "data_file_prefix": "valid."
+                        }
+                        # p = mp.Process(target=PRSum.eval_raw, kwargs=kwargs)
+                        # decode instead of evaluate
+                        p = mp.Process(target=PRSum.decode_raw, kwargs=kwargs)
+                        eval_processes.append(p)
+                        p.start()
 
-        for cur_p in eval_processes:
-            cur_p.join()
-        print("end training.")
+            for cur_p in eval_processes:
+                cur_p.join()
+            print("end training.")
 
 
 class PRSum(object):
